@@ -25,7 +25,6 @@ namespace firechat.Controllers
             var urlId = GetOrAddUrl(url);
             var msgId = AddMessage(msg);
             AddUserMsg(userId, urlId, msgId);
-            fcDb.SaveChanges();
             return "value";
         }
 
@@ -36,6 +35,7 @@ namespace firechat.Controllers
                 value = msg
             });
 
+            fcDb.SaveChanges();
             return newMsg.id;
         }
 
@@ -54,6 +54,8 @@ namespace firechat.Controllers
                 msgId = msgId,
                 userId = userId
             });
+
+            fcDb.SaveChanges();
         }
 
         private int GetOrAddUser(string user)
@@ -70,6 +72,7 @@ namespace firechat.Controllers
                 value = user
             });
 
+            fcDb.SaveChanges();
             return newUser.id;
         }
 
@@ -87,6 +90,7 @@ namespace firechat.Controllers
                 value = url
             });
 
+            fcDb.SaveChanges();
             return newUrl.id;
         }
 
