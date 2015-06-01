@@ -13,5 +13,7 @@ namespace firechat
 
         [StringLength(50)]
         public string value { get; set; }
+
+        public DateTime? timeStamp { get; set; }
     }
 }

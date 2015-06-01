@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace firechat.Controllers
 {
@@ -28,11 +29,51 @@ namespace firechat.Controllers
             return "value";
         }
 
+        public string Get(string url)
+        {
+            var msgList = GetMsgsForUrl(url);
+            var json = JsonConvert.SerializeObject(msgList);
+            return json;
+        }
+
+        class MessageInfo
+        {
+            public string message;
+            public string username;
+            public string time;
+        }
+
+        private List<MessageInfo> GetMsgsForUrl(string url)
+        {
+            var msgList = new List<MessageInfo>();
+
+            var dbUrl = fcDb.urls.FirstOrDefault(x => x.value == url);
+            
+            if(dbUrl==null)
+                return msgList;
+
+            var urlUserMsgs = fcDb.urlUserMsgs.Where(x => x.urlId == dbUrl.id).Take(10);
+
+            foreach (var uum in urlUserMsgs)
+            {
+                msgList.Add(new MessageInfo()
+                {
+                    message = fcDb.msgs.FirstOrDefault(x => x.id == uum.msgId).value,
+                    time = fcDb.msgs.FirstOrDefault(x => x.id == uum.msgId).timeStamp.ToString(),
+                    username = fcDb.users.FirstOrDefault(x => x.id == uum.userId).value
+                });
+            }
+
+            return msgList;
+        }
+
+
         private int AddMessage(string msg)
         {
             var newMsg = fcDb.msgs.Add(new msg()
             {
-                value = msg
+                value = msg,
+                timeStamp = DateTime.Now
             });
 
             fcDb.SaveChanges();

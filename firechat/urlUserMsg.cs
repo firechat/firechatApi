@@ -16,6 +16,5 @@ namespace firechat
         public int? msgId { get; set; }
 
         public int? userId { get; set; }
-
     }
 }

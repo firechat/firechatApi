@@ -13,5 +13,6 @@ namespace firechat
 
         [StringLength(500)]
         public string value { get; set; }
+
     }
 }
