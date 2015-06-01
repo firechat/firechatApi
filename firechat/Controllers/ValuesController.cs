@@ -52,7 +52,7 @@ namespace firechat.Controllers
             if(dbUrl==null)
                 return msgList;
 
-            var urlUserMsgs = fcDb.urlUserMsgs.Where(x => x.urlId == dbUrl.id).Take(10);
+            var urlUserMsgs = fcDb.urlUserMsgs.Where(x => x.urlId == dbUrl.id).OrderByDescending(x=>x.id).Take(10);
 
             foreach (var uum in urlUserMsgs)
             {
@@ -63,6 +63,8 @@ namespace firechat.Controllers
                     username = fcDb.users.FirstOrDefault(x => x.id == uum.userId).value
                 });
             }
+
+            msgList.Reverse();
 
             return msgList;
         }
