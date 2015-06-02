@@ -19,9 +19,18 @@ namespace firechat.Controllers
             return new string[] { "value1", "value2" };
         }
 
+        private void SanitizeUrl(ref string input)
+        {
+            int index = input.IndexOf("?");
+            if (index > 0)
+                input = input.Substring(0, index);
+        }
+
         // GET api/values/5
         public string Get(string user, string url, string msg)
         {
+            SanitizeUrl(ref url);
+
             var userId = GetOrAddUser(user);
             var urlId = GetOrAddUrl(url);
             var msgId = AddMessage(msg);
@@ -31,6 +40,8 @@ namespace firechat.Controllers
 
         public string Get(string url)
         {
+            SanitizeUrl(ref url);
+
             var msgList = GetMsgsForUrl(url);
             var json = JsonConvert.SerializeObject(msgList);
             return json;
