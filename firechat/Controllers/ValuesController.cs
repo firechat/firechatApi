@@ -58,15 +58,23 @@ namespace firechat.Controllers
                                 "moar"                   ,
                                 "This is cool!!"         };
 
+        private static bool botreplying = false;
+
         //yes, we need to keep em interested
         private void fakeReplyThread(object urlIdObj)
         {
-            Thread.Sleep(3000);
+            if (botreplying)
+                return;
+
+            botreplying = true;
+            
+            Thread.Sleep(4000);
             //randomly pick one of the botComments
             var msgId = AddMessage(botComments[new Random(DateTime.Now.Millisecond).Next(botComments.Count()-1)]);
             var userId = new Random(DateTime.Now.Millisecond).Next(5);
             var urlId = Int32.Parse(urlIdObj.ToString());
             AddUserMsg(userId, urlId, msgId);
+            botreplying = false;
         }
 
 
