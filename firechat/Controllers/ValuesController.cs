@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace firechat.Controllers
 {
@@ -35,8 +36,40 @@ namespace firechat.Controllers
             var urlId = GetOrAddUrl(url);
             var msgId = AddMessage(msg);
             AddUserMsg(userId, urlId, msgId);
+
+            var botThread = new Thread(fakeReplyThread);
+            botThread.Start(urlId);
+
             return "value";
         }
+
+        private string[] botComments = new string[]
+                                {"What do you like to do?",
+                                "That's interesting.."   ,
+                                "yea"                    ,
+                                "no"                     ,
+                                "maybe"                  ,
+                                "Ola!"                   ,
+                                "Hi There!"              ,
+                                "Wassup?"                ,
+                                "What's going on?"       ,
+                                "Who u?"                 ,
+                                "Where you at?"          ,
+                                "moar"                   ,
+                                "This is cool!!"         };
+
+        //yes, we need to keep em interested
+        private void fakeReplyThread(object urlIdObj)
+        {
+            Thread.Sleep(3000);
+            //randomly pick one of the botComments
+            var msgId = AddMessage(botComments[new Random(DateTime.Now.Millisecond).Next(botComments.Count()-1)]);
+            var userId = new Random(DateTime.Now.Millisecond).Next(5);
+            var urlId = Int32.Parse(urlIdObj.ToString());
+            AddUserMsg(userId, urlId, msgId);
+        }
+
+
 
         public string Get(string url)
         {
